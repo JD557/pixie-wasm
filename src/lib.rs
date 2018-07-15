@@ -173,6 +173,11 @@ impl Renderable<Model> for Model {
                 <p><strong>{ "Recommendation: " }</strong>{ recommendation }</p>
                 <p><strong>{ "Last component update: " }</strong>{ Date::new().to_string() }</p>
             </div>
+            <a href="https://github.com/jd557/pixie-rust",>
+                <img style="position: absolute; top: 0; right: 0; border: 0;",
+                    src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png",
+                    alt="Fork me on GitHub", />
+            </a>
         }
     }
 }
