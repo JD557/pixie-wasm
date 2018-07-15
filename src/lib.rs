@@ -26,8 +26,27 @@ pub struct Model {
 }
 
 pub enum Msg {
-    GetRecommendation(String),
     LoadData,
+    GetRecommendation(String),
+    UseSuggestion,
+}
+
+fn get_recomentation(model: &Model, query: String) -> String {
+    model
+        .recommender
+        .object_recommendations(
+            &vec![query],
+            15,
+            500,
+            &(|_, _| 1.0),
+            &(|_, to| match to {
+                name => model.ratings.get(name).unwrap_or(&0.0).clone(),
+            }),
+        )
+        .iter()
+        .next()
+        .unwrap_or(&String::from(""))
+        .clone()
 }
 
 impl Component for Model {
@@ -87,21 +106,7 @@ impl Component for Model {
                 update_required
             }
             Msg::GetRecommendation(str) => {
-                let new_recommendation = self.recommender
-                    .object_recommendations(
-                        &vec![str.clone()],
-                        15,
-                        500,
-                        &(|_, _| 1.0),
-                        &(|_, to| match to {
-                            name => self.ratings.get(name).unwrap_or(&0.0).clone(),
-                        }),
-                    )
-                    .iter()
-                    .next()
-                    .unwrap_or(&String::from(""))
-                    .clone();
-
+                let new_recommendation = get_recomentation(self, str.clone());
                 let mut new_suggestion = self.suggested_query.clone();
 
                 if str.is_empty() {
@@ -119,6 +124,16 @@ impl Component for Model {
                 {
                     self.recommendation = new_recommendation;
                     self.suggested_query = new_suggestion;
+                    true
+                } else {
+                    false
+                }
+            }
+            Msg::UseSuggestion => {
+                self.query = self.suggested_query.clone();
+                let new_recommendation = get_recomentation(self, self.query.clone());
+                if self.recommendation != new_recommendation {
+                    self.recommendation = new_recommendation;
                     true
                 } else {
                     false
@@ -150,7 +165,9 @@ impl Renderable<Model> for Model {
                         oninput=|e| Msg::GetRecommendation(e.value),
                         placeholder="Query",/>
                     { " " }
+                    <a href="#", onclick=|_| Msg::UseSuggestion,>
                     { self.suggested_query.clone() }
+                    </a>
                 </nav>
                 <p><strong>{ "Data status: " }</strong>{ data_message }</p>
                 <p><strong>{ "Recommendation: " }</strong>{ recommendation }</p>
