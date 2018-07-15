@@ -112,9 +112,15 @@ impl Component for Model {
                 if str.is_empty() {
                     new_suggestion = String::from("");
                 } else if str.len() > 3 {
-                    new_suggestion = self.ratings
+                    let mut possible_suggestions = self.ratings
                         .keys()
-                        .find(|name| name.to_lowercase().contains(&str.to_lowercase()))
+                        .filter(|name| name.to_lowercase().contains(&str.to_lowercase()))
+                        .collect::<Vec<&String>>();
+                    possible_suggestions.sort_by_key(|s| s.len());
+                    new_suggestion = possible_suggestions
+                        .iter()
+                        .cloned()
+                        .next()
                         .unwrap_or(&String::from(""))
                         .clone();
                 }
