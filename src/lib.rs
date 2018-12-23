@@ -53,7 +53,7 @@ impl Component for Model {
     type Message = Msg;
     type Properties = ();
 
-    fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(_: Self::Properties, mut link: ComponentLink<Self>) -> Self {
         let mut interval = IntervalService::new();
         let load_data_callback = link.send_back(|_| Msg::LoadData);
         let data_load_task = interval.spawn(Duration::from_secs(1), load_data_callback.into());

@@ -1,2 +1,4 @@
+default-target = "wasm32-unknown-emscripten"
+
 [target.wasm32-unknown-emscripten]
 link-args = ["-s", "BINARYEN_TRAP_MODE='clamp'"]
