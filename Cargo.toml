@@ -7,5 +7,6 @@ edition = "2018"
 [dependencies]
 stdweb = "0.4.2"
 yew = { git = "https://github.com/DenisKolodin/yew" }
+rand = { version = "0.6", features = ["stdweb"] }
 pixie-rust = { git = "https://github.com/JD557/pixie-rust" }
 csv = "1"
